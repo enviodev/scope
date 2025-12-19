@@ -133,24 +133,90 @@ class Service {
     limit: number,
     sort: Sort,
   ): Promise<AddressTransactions> {
-    const response = await this.client.get('transactions', {
-      searchParams: {
+    console.log('[HypersyncService] getAddressTransactions called', {
+      chain: this.chain,
+      address,
+      cursor: startCursor,
+      limit,
+      sort,
+    });
+
+    try {
+      console.log('[HypersyncService] Making API request to /api/transactions...');
+      console.log('[HypersyncService] Search params:', {
         chain: this.chain,
         address,
         cursor: startCursor ? startCursor : 0,
         limit,
         sort,
-      },
-    });
-    const transactions = await response.json<AddressTransactionsResponse>();
-    return {
-      transactions: transactions.transactions.map((transaction) => ({
-        ...transaction,
-        gasPrice: BigInt(transaction.gasPrice),
-        value: BigInt(transaction.value),
-      })),
-      pagination: transactions.pagination,
-    };
+      });
+
+      const response = await this.client.get('transactions', {
+        searchParams: {
+          chain: this.chain,
+          address,
+          cursor: startCursor ? startCursor : 0,
+          limit,
+          sort,
+        },
+      });
+
+      console.log('[HypersyncService] Response received:');
+      console.log('  - Status:', response.status);
+      console.log('  - Status text:', response.statusText);
+      console.log('  - Content-Type:', response.headers.get('content-type'));
+      console.log('  - Response OK:', response.ok);
+
+      // Clone the response so we can read it multiple times if needed
+      const clonedResponse = response.clone();
+
+      // Try to read as text first to see what we're getting
+      const responseText = await clonedResponse.text();
+      console.log('[HypersyncService] Response body (first 500 chars):', responseText);
+      console.log('[HypersyncService] Response body length:', responseText.length);
+
+      // Now parse as JSON
+      console.log('[HypersyncService] Attempting to parse response as JSON...');
+      const transactions = await response.json<AddressTransactionsResponse>();
+
+      console.log('[HypersyncService] Successfully parsed JSON response');
+      console.log('[HypersyncService] Response data:', {
+        transactionCount: transactions.transactions?.length || 0,
+        pagination: transactions.pagination,
+        hasError: !!(transactions as any).error,
+        errorMessage: (transactions as any).error,
+      });
+
+      return {
+        transactions: transactions.transactions.map((transaction) => ({
+          ...transaction,
+          gasPrice: BigInt(transaction.gasPrice),
+          value: BigInt(transaction.value),
+        })),
+        pagination: transactions.pagination,
+      };
+    } catch (error) {
+      console.error('[HypersyncService] getAddressTransactions ERROR:');
+      console.error('  - Error type:', typeof error);
+      console.error('  - Error name:', error instanceof Error ? error.name : 'N/A');
+      console.error('  - Error message:', error instanceof Error ? error.message : String(error));
+      console.error('  - Full error:', error);
+
+      if (error instanceof Error && 'response' in error) {
+        const httpError = error as any;
+        console.error('  - HTTP Status:', httpError.response?.status);
+        console.error('  - HTTP Status Text:', httpError.response?.statusText);
+
+        try {
+          const errorBody = await httpError.response?.text();
+          console.error('  - Response body:', errorBody?.substring(0, 1000));
+        } catch (e) {
+          console.error('  - Could not read error response body');
+        }
+      }
+
+      throw error;
+    }
   }
 
   async getAddressLogs(
@@ -159,16 +225,83 @@ class Service {
     limit: number,
     sort: Sort,
   ): Promise<AddressLogs> {
-    const response = await this.client.get('logs', {
-      searchParams: {
+    console.log('[HypersyncService] getAddressLogs called', {
+      chain: this.chain,
+      address,
+      cursor: startCursor,
+      limit,
+      sort,
+    });
+
+    try {
+      console.log('[HypersyncService] Making API request to /api/logs...');
+      console.log('[HypersyncService] Search params:', {
         chain: this.chain,
         address,
         cursor: startCursor ? startCursor : 0,
         limit,
         sort,
-      },
-    });
-    return response.json<AddressLogs>();
+      });
+
+      const response = await this.client.get('logs', {
+        searchParams: {
+          chain: this.chain,
+          address,
+          cursor: startCursor ? startCursor : 0,
+          limit,
+          sort,
+        },
+      });
+
+      console.log('[HypersyncService] Response received:');
+      console.log('  - Status:', response.status);
+      console.log('  - Status text:', response.statusText);
+      console.log('  - Content-Type:', response.headers.get('content-type'));
+      console.log('  - Response OK:', response.ok);
+
+      // Clone the response so we can read it multiple times if needed
+      const clonedResponse = response.clone();
+
+      // Try to read as text first to see what we're getting
+      const responseText = await clonedResponse.text();
+      console.log('[HypersyncService] Response body (first 500 chars):', responseText.substring(0, 500));
+      console.log('[HypersyncService] Response body length:', responseText.length);
+
+      // Now parse as JSON
+      console.log('[HypersyncService] Attempting to parse response as JSON...');
+      const logs = await response.json<AddressLogs>();
+
+      console.log('[HypersyncService] Successfully parsed JSON response');
+      console.log('[HypersyncService] Response data:', {
+        logCount: logs.logs?.length || 0,
+        pagination: logs.pagination,
+        hasError: !!(logs as any).error,
+        errorMessage: (logs as any).error,
+      });
+
+      return logs;
+    } catch (error) {
+      console.error('[HypersyncService] getAddressLogs ERROR:');
+      console.error('  - Error type:', typeof error);
+      console.error('  - Error name:', error instanceof Error ? error.name : 'N/A');
+      console.error('  - Error message:', error instanceof Error ? error.message : String(error));
+      console.error('  - Full error:', error);
+
+      if (error instanceof Error && 'response' in error) {
+        const httpError = error as any;
+        console.error('  - HTTP Status:', httpError.response?.status);
+        console.error('  - HTTP Status Text:', httpError.response?.statusText);
+
+        try {
+          const errorBody = await httpError.response?.text();
+          console.error('  - Response body:', errorBody?.substring(0, 1000));
+        } catch (e) {
+          console.error('  - Could not read error response body');
+        }
+      }
+
+      throw error;
+    }
   }
 
   async getAddressTransfers(

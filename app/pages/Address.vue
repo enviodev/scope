@@ -499,7 +499,23 @@ watch(transactionPage, (page) => {
   fetchTransactions();
 });
 async function fetchTransactions(): Promise<void> {
+  console.log('[Address.vue] fetchTransactions called', {
+    address: address.value,
+    hasHypersyncService: !!hypersyncService.value,
+    sort: sort.value,
+    cursor: transactionPagination.value.cursor,
+    perPage: transactionsPerPage.value,
+  });
+
   if (!address.value || !hypersyncService.value || !sort.value) {
+    console.log(
+      '[Address.vue] fetchTransactions aborted - missing dependencies',
+      {
+        hasAddress: !!address.value,
+        hasHypersyncService: !!hypersyncService.value,
+        hasSort: !!sort.value,
+      },
+    );
     return;
   }
   if (
@@ -507,27 +523,42 @@ async function fetchTransactions(): Promise<void> {
     transactionPagination.value.cursor &&
     transactionPagination.value.cursor < 0
   ) {
+    console.log('[Address.vue] fetchTransactions aborted - cursor < 0');
     return;
   }
   isLoadingTransactions.value = true;
-  const addressTransactions =
-    await hypersyncService.value.getAddressTransactions(
-      address.value,
-      transactionPagination.value.cursor,
-      transactionsPerPage.value + 1,
-      sort.value,
-    );
-  const newTransactions = addressTransactions.transactions;
-  // Append newly fetched transactions to the end of the list
-  // Make sure there are no duplicates
-  transactions.value = [
-    ...new Map(
-      transactions.value
-        .concat(newTransactions)
-        .map((transaction) => [transaction.hash, transaction]),
-    ).values(),
-  ];
-  transactionPagination.value = addressTransactions.pagination;
+
+  try {
+    const addressTransactions =
+      await hypersyncService.value.getAddressTransactions(
+        address.value,
+        transactionPagination.value.cursor,
+        transactionsPerPage.value + 1,
+        sort.value,
+      );
+    console.log('[Address.vue] fetchTransactions received data', {
+      transactionCount: addressTransactions.transactions.length,
+      pagination: addressTransactions.pagination,
+    });
+
+    const newTransactions = addressTransactions.transactions;
+    // Append newly fetched transactions to the end of the list
+    // Make sure there are no duplicates
+    transactions.value = [
+      ...new Map(
+        transactions.value
+          .concat(newTransactions)
+          .map((transaction) => [transaction.hash, transaction]),
+      ).values(),
+    ];
+    transactionPagination.value = addressTransactions.pagination;
+    console.log('[Address.vue] fetchTransactions completed', {
+      totalTransactions: transactions.value.length,
+    });
+  } catch (error) {
+    console.error('[Address.vue] fetchTransactions error:', error);
+  }
+
   isLoadingTransactions.value = false;
 }
 async function refreshTransactions(): Promise<void> {
@@ -565,7 +596,20 @@ watch(logPage, (page) => {
   fetchLogs();
 });
 async function fetchLogs(): Promise<void> {
+  console.log('[Address.vue] fetchLogs called', {
+    address: address.value,
+    hasHypersyncService: !!hypersyncService.value,
+    sort: sort.value,
+    cursor: logPagination.value.cursor,
+    perPage: logsPerPage.value,
+  });
+
   if (!address.value || !hypersyncService.value || !sort.value) {
+    console.log('[Address.vue] fetchLogs aborted - missing dependencies', {
+      hasAddress: !!address.value,
+      hasHypersyncService: !!hypersyncService.value,
+      hasSort: !!sort.value,
+    });
     return;
   }
   if (
@@ -573,26 +617,41 @@ async function fetchLogs(): Promise<void> {
     logPagination.value.cursor &&
     logPagination.value.cursor < 0
   ) {
+    console.log('[Address.vue] fetchLogs aborted - cursor < 0');
     return;
   }
   isLoadingLogs.value = true;
-  const addressLogs = await hypersyncService.value.getAddressLogs(
-    address.value,
-    logPagination.value.cursor,
-    logsPerPage.value + 1,
-    sort.value,
-  );
-  const newLogs = addressLogs.logs;
-  // Append newly fetched logs to the end of the list
-  // Make sure there are no duplicates
-  logs.value = [
-    ...new Map(
-      logs.value
-        .concat(newLogs)
-        .map((log) => [`${log.transactionHash}-${log.logIndex}`, log]),
-    ).values(),
-  ];
-  logPagination.value = addressLogs.pagination;
+
+  try {
+    const addressLogs = await hypersyncService.value.getAddressLogs(
+      address.value,
+      logPagination.value.cursor,
+      logsPerPage.value + 1,
+      sort.value,
+    );
+    console.log('[Address.vue] fetchLogs received data', {
+      logCount: addressLogs.logs.length,
+      pagination: addressLogs.pagination,
+    });
+
+    const newLogs = addressLogs.logs;
+    // Append newly fetched logs to the end of the list
+    // Make sure there are no duplicates
+    logs.value = [
+      ...new Map(
+        logs.value
+          .concat(newLogs)
+          .map((log) => [`${log.transactionHash}-${log.logIndex}`, log]),
+      ).values(),
+    ];
+    logPagination.value = addressLogs.pagination;
+    console.log('[Address.vue] fetchLogs completed', {
+      totalLogs: logs.value.length,
+    });
+  } catch (error) {
+    console.error('[Address.vue] fetchLogs error:', error);
+  }
+
   isLoadingLogs.value = false;
 }
 async function refreshLogs(): Promise<void> {

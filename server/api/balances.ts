@@ -88,7 +88,7 @@ export default defineEventHandler(async (event) => {
 
   const tokenAddresses = new Set<Address>();
 
-  for (;;) {
+  for (; ;) {
     const res = await receiver.recv();
     if (res === null) {
       break;

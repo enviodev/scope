@@ -193,7 +193,7 @@ export default defineEventHandler(async (event) => {
   });
   const transferData: Data[] = [];
 
-  for (;;) {
+  for (; ;) {
     const res = await receiver.recv();
     if (res === null) {
       break;

@@ -8,19 +8,19 @@ Originally developed by [destiner](https://github.com/destiner). Now maintained 
 
 This monorepo contains four services:
 
-### scope-app
+### ui
 
 The frontend application. Built with Nuxt.js. Provides the user interface for exploring blocks, transactions, addresses, and user operations.
 
-### scope-api
+### api
 
 The backend API server. Built with Hono and Bun. Serves label data and contract information to the frontend.
 
-### scope-registry
+### registry
 
 The label registry. Stores and generates labels for known addresses (protocols, smart accounts, modules, etc.).
 
-### envio-hyperindex-erc4337
+### indexer
 
 An indexer for ERC-4337 events. Built with Envio HyperIndex. Indexes UserOperationEvent and AccountDeployed events from EntryPoint contracts across multiple chains.
 

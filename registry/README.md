@@ -1,4 +1,6 @@
-# Scope Label Registry
+# Registry
+
+The label registry for Scope. Stores and generates labels for known addresses (protocols, smart accounts, modules, etc.).
 
 ## Development
 
@@ -7,7 +9,7 @@ Make sure you have the `.env.local` file with the required config.
 To install the dependencies:
 
 ```
-bun i
+bun install
 ```
 
 To run the label generation script:
@@ -15,9 +17,3 @@ To run the label generation script:
 ```
 bun run generate:labels
 ```
-
-## Related
-
-* [Scope UI](https://github.com/scope-sh/scope-app)
-* [Scope API](https://github.com/scope-sh/scope-api)
-* [Indexer](https://github.com/scope-sh/hyperindex-erc4337)

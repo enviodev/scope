@@ -1,0 +1,62 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1719939759330,
+      "tag": "0000_harsh_venus",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1720000404993,
+      "tag": "0001_equal_genesis",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1720279459002,
+      "tag": "0002_familiar_the_professor",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1720435227281,
+      "tag": "0003_perpetual_lila_cheney",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1720899260885,
+      "tag": "0004_steep_psylocke",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1720899997549,
+      "tag": "0005_brown_proudstar",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1720900671612,
+      "tag": "0006_yellow_terrax",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1725285108970,
+      "tag": "0007_third_mister_sinister",
+      "breakpoints": true
+    }
+  ]
+}

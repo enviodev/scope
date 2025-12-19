@@ -1,0 +1,17 @@
+type UserOp {
+  id: ID!
+  chainId: Int!
+  blockNumber: Int!
+  blockTimestamp: Int! @index
+  transactionIndex: Int!
+  transactionHash: String!
+  hash: String!
+  actualGasCost: BigInt!
+  actualGasUsed: BigInt!
+  nonce: BigInt!
+  bundler: String
+  paymaster: String!
+  sender: String! @index
+  success: Boolean!
+  entryPoint: String!
+}

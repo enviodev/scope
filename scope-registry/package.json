@@ -1,0 +1,50 @@
+{
+  "name": "scope-registry",
+  "version": "1.0.0",
+  "description": "Scope Registry",
+  "author": {
+    "name": "Timur Badretdinov",
+    "url": "https://github.com/Destiner"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/scope-sh/scope-registry.git"
+  },
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "cache:sources": "bun scripts/cache-sources.ts",
+    "generate": "bun run generate:labels",
+    "generate:labels": "bun scripts/generate-labels.ts",
+    "db:migration:generate": "bunx drizzle-kit generate --dialect=postgresql --schema=./src/db/schema.ts --out=./drizzle",
+    "db:migration:apply": "bunx --bun drizzle-kit migrate",
+    "lint": "bun run lint:prettier && bun run lint:eslint",
+    "lint:prettier": "prettier -c \"src/**/*.{json,js,ts}\"",
+    "lint:eslint": "eslint \"src/**/*.{js,ts}\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "drizzle-orm": "^0.44.1",
+    "evm-providers": "^0.5.7",
+    "ky": "^1.8.1",
+    "pg": "^8.16.0",
+    "viem": "^2.30.6"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.28.0",
+    "@types/bun": "^1.2.15",
+    "@types/pg": "^8.15.4",
+    "drizzle-kit": "^0.31.1",
+    "eslint": "^9.28.0",
+    "eslint-import-resolver-typescript": "^4.4.2",
+    "eslint-plugin-import-x": "^4.15.0",
+    "prettier": "^3.5.3",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.33.1"
+  }
+}

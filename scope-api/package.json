@@ -1,0 +1,51 @@
+{
+  "name": "scope-api",
+  "version": "1.0.0",
+  "description": "Scope API",
+  "author": {
+    "name": "Timur Badretdinov",
+    "url": "https://github.com/Destiner"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/scope-sh/scope-api.git"
+  },
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "start": "NODE_ENV=production bun run src/index.ts",
+    "dev": "bun run --hot src/index.ts",
+    "lint": "bun run lint:prettier && bun run lint:eslint",
+    "lint:prettier": "prettier -c \"src/**/*.{json,js,ts}\"",
+    "lint:eslint": "eslint \"src/**/*.{js,ts}\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@hono/valibot-validator": "^0.5.2",
+    "@shazow/whatsabi": "^0.22.2",
+    "drizzle-orm": "^0.44.1",
+    "evm-providers": "^0.5.7",
+    "hono": "^4.7.11",
+    "ky": "^1.8.1",
+    "minio": "^8.0.5",
+    "minisearch": "^7.1.2",
+    "pg": "^8.16.0",
+    "valibot": "^1.1.0",
+    "viem": "^2.30.6"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.28.0",
+    "@types/bun": "^1.2.15",
+    "@types/pg": "^8.15.4",
+    "eslint": "^9.28.0",
+    "eslint-import-resolver-typescript": "^4.4.2",
+    "eslint-plugin-import-x": "^4.15.0",
+    "prettier": "^3.5.3",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.33.1"
+  }
+}

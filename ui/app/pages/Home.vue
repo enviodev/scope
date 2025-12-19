@@ -51,7 +51,6 @@ import {
   useDebounceFn,
 } from '@vueuse/core';
 import type { Address, Hex } from 'viem';
-import { createPublicClient, http } from 'viem';
 import { ref, computed, watch, onMounted } from 'vue';
 import { RouterLink, useRouter } from 'vue-router';
 
@@ -59,16 +58,14 @@ import IconBrand from '@/components/__common/IconBrand.vue';
 import IconChain from '@/components/__common/IconChain.vue';
 import SearchBar, { type Result } from '@/components/__common/SearchBar.vue';
 import useEnv from '@/composables/useEnv';
-import EvmService from '@/services/evm';
+import { getHeight } from '@/services/hypersync';
 import NamingService from '@/services/naming';
 import type { Chain } from '@/utils/chains';
 import {
   CHAINS,
   ETHEREUM,
-  getChainData,
   getChainName,
   getChainNames,
-  getEndpointUrl,
 } from '@/utils/chains';
 import { getRouteLocation } from '@/utils/routing';
 import { searchTransactionOrOp } from '@/utils/search';
@@ -139,19 +136,18 @@ async function fetchBlocks(): Promise<void> {
   }
 }
 async function fetchChainBlock(chain: Chain): Promise<void> {
-  const client = createPublicClient({
-    chain: getChainData(chain),
-    transport: http(getEndpointUrl(chain, quicknodeAppName, quicknodeAppKey)),
-  });
-  const service = new EvmService(client);
-  const block = await service.getLatestBlock();
+  try {
+    const block = await getHeight(chain);
 
-  if (blocks.value[chain] !== block) {
-    blocks.value[chain] = block;
-    updatedChains.value.add(chain);
-    setTimeout(() => {
-      updatedChains.value.delete(chain);
-    }, 200);
+    if (blocks.value[chain] !== block) {
+      blocks.value[chain] = block;
+      updatedChains.value.add(chain);
+      setTimeout(() => {
+        updatedChains.value.delete(chain);
+      }, 200);
+    }
+  } catch (e) {
+    console.error(`Failed to fetch block height for chain ${chain}:`, e);
   }
 }
 

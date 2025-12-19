@@ -62,6 +62,7 @@ import SelectPerPage from '@/components/__common/SelectPerPage.vue';
 import TableBlocks from '@/components/blocks/TableBlocks.vue';
 import useChain from '@/composables/useChain';
 import EvmService, { type Block } from '@/services/evm';
+import { getHeight } from '@/services/hypersync';
 
 const { id: chainId, client } = useChain();
 
@@ -110,9 +111,17 @@ async function fetchBlocks(): Promise<void> {
     return;
   }
   const earliestBlock = blocks.value.at(-1)?.number;
-  const latestBlock = earliestBlock
-    ? BigInt(earliestBlock) - 1n
-    : await evmService.value.getLatestBlock();
+  let latestBlock: bigint;
+  if (earliestBlock) {
+    latestBlock = BigInt(earliestBlock) - 1n;
+  } else {
+    try {
+      latestBlock = await getHeight(chainId.value);
+    } catch (e) {
+      console.error('Failed to fetch block height from Hypersync:', e);
+      return;
+    }
+  }
   isLoading.value = true;
   const newBlocks = [];
   for (let i = 0n; i < perPage.value; i++) {

@@ -170,6 +170,7 @@ import useToast from '@/composables/useToast';
 import ApiService from '@/services/api';
 import EvmService from '@/services/evm';
 import type { BlockWithTransactions } from '@/services/evm';
+import { getHeight } from '@/services/hypersync';
 import type { Command } from '@/stores/commands';
 import { toBigInt, toRelativeTime } from '@/utils/conversion';
 import {
@@ -271,11 +272,15 @@ async function fetch(): Promise<void> {
     return;
   }
   isLoading.value = true;
-  const latestBlock = await evmService.value.getLatestBlock();
-  if (number.value > latestBlock) {
-    isFuture.value = true;
-    isLoading.value = false;
-    return;
+  try {
+    const latestBlock = await getHeight(chainId.value);
+    if (number.value > latestBlock) {
+      isFuture.value = true;
+      isLoading.value = false;
+      return;
+    }
+  } catch (e) {
+    console.error('Failed to fetch block height from Hypersync:', e);
   }
   block.value = await evmService.value.getBlockWithTransactions(number.value);
   isLoading.value = false;

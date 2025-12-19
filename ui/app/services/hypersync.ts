@@ -5,6 +5,16 @@ import type { Chain } from '@/utils/chains.js';
 
 type Sort = 'asc' | 'desc';
 
+interface HeightResponse {
+  height: number;
+}
+
+async function getHeight(chain: Chain): Promise<bigint> {
+  const response = await ky.get(`https://${chain}.hypersync.xyz/height`);
+  const data = await response.json<HeightResponse>();
+  return BigInt(data.height);
+}
+
 interface Pagination {
   cursor: number | null;
   height: number | null;
@@ -344,4 +354,5 @@ class Service {
 }
 
 export default Service;
+export { getHeight };
 export type { Transaction, Log, Transfer, Pagination, Sort, TokenBalance };

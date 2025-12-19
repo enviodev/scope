@@ -77,7 +77,7 @@ import useEnv from '@/composables/useEnv';
 import useToast from '@/composables/useToast';
 import ApiService from '@/services/api';
 import EvmService from '@/services/evm';
-import HypersyncService from '@/services/hypersync';
+import HypersyncService, { getHeight } from '@/services/hypersync';
 import IndexerService from '@/services/indexer';
 import NamingService from '@/services/naming';
 import type { Command, NestedCommand } from '@/stores/commands';
@@ -458,15 +458,17 @@ async function getGoToItems(
   async function getOpenBlockByTagCommand(
     tag: string,
   ): Promise<Command | null> {
-    if (!evmService.value) {
-      return null;
-    }
     if (tag === 'earliest') {
       return getOpenBlockByNumberCommand('0');
     } else {
-      // Get latest block
-      const block = await evmService.value.getLatestBlock();
-      return getOpenBlockByNumberCommand(block.toString());
+      // Get latest block from Hypersync
+      try {
+        const block = await getHeight(chainId.value);
+        return getOpenBlockByNumberCommand(block.toString());
+      } catch (e) {
+        console.error('Failed to fetch block height from Hypersync:', e);
+        return null;
+      }
     }
   }
 

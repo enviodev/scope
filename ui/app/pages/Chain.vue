@@ -69,6 +69,7 @@ import useEnv from '@/composables/useEnv';
 import useToast from '@/composables/useToast';
 import ApiService from '@/services/api';
 import EvmService from '@/services/evm';
+import { getHeight } from '@/services/hypersync';
 import IndexerService from '@/services/indexer';
 import NamingService from '@/services/naming';
 import type { Command } from '@/stores/commands';
@@ -145,11 +146,12 @@ watch(chainId, (_newChain, oldChain) => {
 });
 
 async function fetch(): Promise<void> {
-  if (!evmService.value) {
-    return;
-  }
   isLoading.value = true;
-  latestBlock.value = await evmService.value.getLatestBlock();
+  try {
+    latestBlock.value = await getHeight(chainId.value);
+  } catch (e) {
+    console.error('Failed to fetch block height from Hypersync:', e);
+  }
   isLoading.value = false;
 }
 

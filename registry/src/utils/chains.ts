@@ -96,6 +96,10 @@ const CHAIN_CONFIG: Record<ChainId, { data: ChainData; name: string }> = {
 
 // Enabled chains for label generation
 const CHAINS: ChainId[] = [
+  ETHEREUM,
+  SEPOLIA,
+  OPTIMISM,
+  OPTIMISM_SEPOLIA,
   POLYGON,
   POLYGON_AMOY,
   BASE,

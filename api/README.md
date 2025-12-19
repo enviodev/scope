@@ -4,7 +4,21 @@ The backend API server for Scope. Built with Hono and Bun. Serves label data and
 
 ## Development
 
-Make sure you have the `.env.local` file with the required config.
+### Environment
+
+Create a `.env.local` file:
+
+```
+DATABASE_URL=postgresql://postgres:postgres@localhost:5432/scope
+
+# Minio (optional, for contract source caching)
+MINIO_ENDPOINT=localhost
+MINIO_ACCESS_KEY=minio
+MINIO_SECRET_KEY=minio123
+MINIO_BUCKET=scope
+```
+
+### Setup
 
 To install the dependencies:
 
@@ -12,8 +26,23 @@ To install the dependencies:
 bun install
 ```
 
-To run the server:
+To run the development server:
 
 ```
 bun run dev
+```
+
+To run the production server:
+
+```
+bun run start
+```
+
+### Quick Start
+
+From the repository root:
+
+```
+make setup       # Set up database and install dependencies
+make api-dev     # Run API in development mode
 ```

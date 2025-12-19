@@ -32,25 +32,46 @@ An indexer for ERC-4337 events. Built with Envio HyperIndex. Indexes UserOperati
 - Bun
 - pnpm (for indexer)
 
-### Database Setup
-
-Start PostgreSQL and set up the registry:
+### Quick Start
 
 ```
-make setup
+make setup      # Start services, apply migrations, install dependencies
+make api-dev    # Run API server
+make ui-dev     # Run UI (in another terminal)
 ```
 
-This will:
-1. Start a PostgreSQL container
-2. Apply database migrations
-3. Generate labels
+### Commands
 
-Other commands:
+Database:
 
 ```
-make db-start   # Start PostgreSQL
-make db-stop    # Stop PostgreSQL
+make db-start   # Start PostgreSQL and Minio
+make db-stop    # Stop all containers
 make db-reset   # Stop and remove all data
+make db-setup   # Start database and apply migrations
+```
+
+Registry:
+
+```
+make registry-generate              # Generate labels for all chains
+make registry-generate-chain CHAIN=8453  # Generate labels for specific chain
+make registry-chains                # List available chains
+```
+
+API:
+
+```
+make api-install  # Install API dependencies
+make api-dev      # Run API in development mode
+make api-start    # Run API in production mode
+```
+
+UI:
+
+```
+make ui-install   # Install UI dependencies
+make ui-dev       # Run UI in development mode
 ```
 
 ## License
